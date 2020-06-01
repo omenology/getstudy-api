@@ -1,0 +1,29 @@
+{
+  "name": "getstudy-api",
+  "version": "1.0.0",
+  "description": "personal group projek",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "api",
+    "getstudy",
+    "getidea"
+  ],
+  "author": "getIdea",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "email-validator": "^2.0.4",
+    "express": "^4.17.1",
+    "helmet": "^3.22.0",
+    "js-sha256": "^0.9.0",
+    "jsonwebtoken": "^8.5.1",
+    "mariadb": "^2.4.0",
+    "moment": "^2.25.3",
+    "sequelize": "^5.21.10",
+    "sequelize-cli": "^5.5.1",
+    "uuid-validate": "0.0.3"
+  }
+}
