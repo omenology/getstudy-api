@@ -2,44 +2,32 @@
 
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable(`user`, {
+    return queryInterface.createTable(`classes`, {
       id: {
         type: Sequelize.UUID,
         defaultValue: Sequelize.UUIDV4,
         allowNull: false,
         primaryKey: true,
       },
-      role_id: {
+      course_id: {
         type: Sequelize.UUID,
         allowNull: false,
         references: {
-          model: "role",
+          model: "course",
           key: "id",
         },
       },
-      user_id: {
+      name: {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      email: {
-        type: Sequelize.STRING,
+      description: {
+        type: Sequelize.TEXT,
         allowNull: false,
       },
-      password: {
-        type: Sequelize.STRING,
-        allowNull: false,
-      },
-      data_login: {
+      users: {
         type: Sequelize.JSON,
-        defaultValue: {},
-      },
-      profile: {
-        type: Sequelize.JSON,
-      },
-
-      verify: {
-        type: Sequelize.BOOLEAN,
-        defaultValue: false,
+        defaultValue: [],
       },
       active: {
         type: Sequelize.BOOLEAN,
@@ -66,6 +54,6 @@ module.exports = {
     });
   },
   down: (queryInterface) => {
-    return queryInterface.dropTable(`user`);
+    return queryInterface.dropTable(`classes`);
   },
 };

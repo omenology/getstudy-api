@@ -1,0 +1,46 @@
+const route = require("express").Router({ mergeParams: true });
+const uuid_validator = require("uuid-validate");
+
+const { Sequelize, Op } = require("../../../../helpers/conection");
+const response = require("../../../../helpers/response");
+
+const user = Sequelize.import("../../../data/models/user.js");
+const classes = Sequelize.import("../../../data/models/classes.js");
+
+route.get("/", async (req, res) => {
+  const id = req.params.id;
+  try {
+    if (!uuid_validator(id)) return response.badrequest(res, "id user must be uuid format");
+    const data = await user.findOne({
+      where: {
+        id,
+      },
+    });
+
+    response.ok(res, data, "fetch data users", true, null, null, null);
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(500);
+  }
+});
+
+route.get("/classes", async (req, res) => {
+  const id = req.params.id;
+  try {
+    if (!uuid_validator(id)) return response.badrequest(res, "id user must be uuid format");
+    const data = await classes.findAll({
+      attributes: { exclude: ["created_at", "created_by", "updated_at", "updated_by", "deleted_at", "deleted_by"] },
+      where: {
+        [Op.and]: [{ active: true }, Sequelize.literal(`JSON_CONTAINS(users, '["${id}"]') `)],
+      },
+      limit: 10,
+    });
+
+    response.ok(res, data, "fetch data users", true, null, 10, null);
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(500);
+  }
+});
+
+module.exports = route;

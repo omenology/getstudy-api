@@ -1,8 +1,7 @@
 "use strict";
-
 module.exports = (sequelize, DataTypes) => {
-  const Log = sequelize.define(
-    "log_activities",
+  const Classes = sequelize.define(
+    "classes",
     {
       id: {
         type: DataTypes.UUID,
@@ -10,9 +9,10 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         primaryKey: true,
       },
+      course_id: DataTypes.UUID,
       name: DataTypes.STRING,
       description: DataTypes.TEXT,
-      data_log: DataTypes.JSON,
+      users: DataTypes.JSON,
       active: DataTypes.BOOLEAN,
       created_at: DataTypes.DATE,
       created_by: DataTypes.JSON,
@@ -22,10 +22,12 @@ module.exports = (sequelize, DataTypes) => {
       deleted_by: DataTypes.JSON,
     },
     {
-      tableName: "log_activities",
+      tableName: "classes",
       underscored: true,
     }
   );
-  Log.associate = function (models) {};
-  return Log;
+  Classes.associate = function (models) {
+    Classes.belongsTo(models.course, { foreignKey: "course_id" });
+  };
+  return Classes;
 };
