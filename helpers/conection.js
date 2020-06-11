@@ -4,7 +4,7 @@ const database = require("../config/database");
 const env = process.env.NODE_ENV || "development";
 
 const Op = sequelize.Op;
-const Sequelize = new sequelize("getstudy_db", "root", "", {
+const Sequelize = new sequelize(database[env].database, database[env].username, database[env].password, {
   host: database[env].host,
   dialect: database[env].dialect,
   port: database[env].port,

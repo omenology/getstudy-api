@@ -4,7 +4,13 @@
   "description": "personal group projek",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "npm run db-create && npm run db-migrate && npm run db-seed",
+    "db-create": "node helpers/createDB.js",
+    "db-migrate": "npx sequelize-cli db:migrate",
+    "db-unmigrate": "npx sequelize-cli db:migrate:undo:all",
+    "db-seed": "npx sequelize-cli db:seed:all",
+    "db-unseed": "npx sequelize-cli db:seed:undo:all"
   },
   "keywords": [
     "api",

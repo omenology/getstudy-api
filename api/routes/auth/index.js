@@ -18,18 +18,24 @@ route.post("/login", async (req, res) => {
     if (!(email || password)) return response.badrequest(res, "email or password must not be empty");
     if (!email_validator.validate(email)) return response.badrequest(res, "Email not Valid");
 
-    const userData = await user.findOne({
-      where: { email, password },
-    });
+    const userData = await user.findOne(
+      {
+        where: { email, password },
+      },
+      { transaction }
+    );
 
     if (!userData) return response.ok(res, "data not found", "login faild", false, null, null, null);
 
-    const log = await logActivity.create({
-      name: "Login",
-      description: `login user ${email}`,
-      created_at: new Date(),
-      created_by: "system",
-    });
+    const log = await logActivity.create(
+      {
+        name: "Login",
+        description: `login user ${email}`,
+        created_at: new Date(),
+        created_by: "system",
+      },
+      { transaction }
+    );
 
     const dataLogin = {
       accesToken: "belum",
@@ -38,8 +44,11 @@ route.post("/login", async (req, res) => {
       expRefreshToken: "belum",
     };
 
+    await transaction.commit();
+
     response.ok(res, dataLogin, "login succesfull", true, null, null);
   } catch (error) {
+    await transaction.rollback();
     console.log(error);
     res.sendStatus(500);
   }

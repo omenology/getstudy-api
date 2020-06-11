@@ -27,6 +27,15 @@ module.exports = {
       data: data,
     });
   },
+  noContent: async (res, message) => {
+    res.status(204).send({
+      meta: {
+        success: true,
+        message: message,
+      },
+      data: null,
+    });
+  },
   badrequest: async (res, message) => {
     res.status(400).send({
       meta: {
