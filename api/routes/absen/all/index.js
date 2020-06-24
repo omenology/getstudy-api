@@ -1,21 +1,25 @@
 const route = require("express").Router({ mergeParams: true });
 const uuid_validator = require("uuid-validate");
+const sha256 = require("js-sha256");
 
 const response = require("../../../../helpers/response");
 
 const { Sequelize, Op, models } = require("../../../data/models");
-const role = models.role;
+const absen = models.absen;
+const classes = models.classes;
 
 route.get("/", async (req, res) => {
-  const id = req.params.id;
-  console.log(id);
   try {
-    if (!uuid_validator(id)) return response.badrequest(res, "id user must be uuid format");
-    const data = await role.findOne({
-      where: { id },
+    const data = await absen.findAndCountAll({
+      include: [
+        {
+          attributes: ["id", "course_id", "name"],
+          model: classes,
+        },
+      ],
     });
 
-    response.ok(res, data, "fetch data role", true, null, null, null);
+    response.ok(res, data.rows, "fetch all data classes", true, null, null, data.count);
   } catch (error) {
     console.log(error);
     res.sendStatus(500);

@@ -1,17 +1,16 @@
 const route = require("express").Router({ mergeParams: true });
 const uuid_validator = require("uuid-validate");
-const sha256 = require("js-sha256");
 
-const { Sequelize, Op } = require("../../../../helpers/conection");
 const response = require("../../../../helpers/response");
 
-const user = Sequelize.import("../../../data/models/user.js");
-const role = Sequelize.import("../../../data/models/role.js");
-const logActivity = Sequelize.import("../../../data/models/log_activities.js");
+const { Sequelize, Op, models } = require("../../../data/models");
+const role = models.role;
+const user = models.user;
+const logActivity = models.logActivities;
 
 route.get("/", async (req, res) => {
   try {
-    const data = await user.findAndCountAll();
+    const data = await user.findAndCountAll({ where: { active: true } });
 
     response.ok(res, data.rows, "fetch all data users", true, null, null, data.count);
   } catch (error) {

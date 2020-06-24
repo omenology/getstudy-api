@@ -2,14 +2,14 @@ const route = require("express").Router({ mergeParams: true });
 const uuid_validator = require("uuid-validate");
 const sha256 = require("js-sha256");
 
-const { Sequelize, Op } = require("../../../../helpers/conection");
 const response = require("../../../../helpers/response");
 
-const course = Sequelize.import("../../../data/models/course.js");
+const { Sequelize, Op, models } = require("../../../data/models");
+const course = models.course;
 
 route.get("/", async (req, res) => {
   try {
-    const data = await course.findAndCountAll();
+    const data = await course.findAndCountAll({ where: { active: true } });
 
     response.ok(res, data.rows, "fetch all data course", true, null, null, data.count);
   } catch (error) {

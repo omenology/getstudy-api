@@ -1,12 +1,14 @@
 const route = require("express").Router({ mergeParams: true });
 const uuid_validator = require("uuid-validate");
 
-const { Sequelize, Op } = require("../../../../helpers/conection");
 const response = require("../../../../helpers/response");
 
-const classes = Sequelize.import("../../../data/models/classes.js");
-const user = Sequelize.import("../../../data/models/user.js");
-const logActivities = Sequelize.import("../../../data/models/log_activities.js");
+const { Sequelize, Op, models } = require("../../../data/models");
+const classes = models.classes;
+const logActivities = models.logActivities;
+const absen = models.absen;
+const user = models.user;
+const role = models.role;
 
 route.get("/", async (req, res) => {
   const id = req.params.id;
@@ -96,6 +98,12 @@ route.post("/users/add", async (req, res) => {
     const updateClass = await classes.update(
       {
         users: newUsersIn,
+        updated_at: new Date(),
+        updated_by: {
+          id: "id saha",
+          name: "add user from class",
+          description: "add user from class",
+        },
       },
       {
         where: { id },
@@ -149,6 +157,12 @@ route.delete("/users/delete", async (req, res) => {
     const updateClass = await classes.update(
       {
         users: newUsersIn,
+        updated_at: new Date(),
+        updated_by: {
+          id: "id saha",
+          name: "delete user from class",
+          description: "delete user from class",
+        },
       },
       {
         where: { id },
@@ -170,6 +184,82 @@ route.delete("/users/delete", async (req, res) => {
 
     await transaction.commit();
     return response.ok(res, updatedClass, "removed users from class succesfull", true, 1, 1, 1);
+  } catch (error) {
+    await transaction.rollback();
+    console.log(error);
+    res.sendStatus(500);
+  }
+});
+
+route.get("/absen", async (req, res) => {
+  const id = req.params.id;
+
+  try {
+    if (!uuid_validator(id)) return response.badrequest(res, "id classes must be uuid format");
+    const cekClass = await classes.findOne({
+      where: { id },
+    });
+    if (!cekClass) return response.noContent(res, "class not found");
+
+    const data = await absen.findAndCountAll({
+      attributes: ["users", "created_at"],
+      where: {
+        class_id: id,
+        active: true,
+      },
+    });
+    return response.ok(res, data.rows, "get abssen", true, null, null, data.count);
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(500);
+  }
+});
+
+route.post("/absen/add", async (req, res) => {
+  const id = req.params.id;
+  const users = req.body.users;
+
+  const transaction = await Sequelize.transaction();
+  try {
+    if (!uuid_validator(id)) return response.badrequest(res, "id classes must be uuid format");
+    if (!Array.isArray(users)) return response.badrequest(res, "user id colections must be array format");
+
+    users.forEach((value) => {
+      if (!uuid_validator(value)) return response.badrequest(res, "id user must be uuid format");
+    });
+
+    const cekClass = await classes.findOne({
+      where: { id },
+    });
+    if (!cekClass) return response.noContent(res, "class not found");
+
+    const cekUser = await user.count({
+      where: { [Op.and]: [{ role_id: "d6438c76-fe58-4c29-87e5-7314283f76ce" }, { id: { [Op.in]: users } }] },
+    });
+    if (cekUser == 0) return response.badrequest(res, "user id colections must be contain at least one role guru");
+
+    const createAbsen = await absen.create(
+      {
+        class_id: id,
+        users,
+        created_at: new Date(),
+        created_by: {},
+      },
+      { transaction }
+    );
+
+    const log = await logActivities.create(
+      {
+        name: "create absen",
+        description: `create absen ${cekClass.name} by saha`,
+        created_at: new Date(),
+        created_by: "system",
+      },
+      { transaction }
+    );
+
+    await transaction.commit();
+    return response.ok(res, createAbsen, "create abssen succesful", true, null, null, null);
   } catch (error) {
     await transaction.rollback();
     console.log(error);

@@ -24,8 +24,6 @@ module.exports = (sequelize, DataTypes) => {
       underscored: true,
     }
   );
-  absen.associate = function (models) {
-    absen.belongsTo(models.classes, { foreignKey: "class_id" });
-  };
+
   return absen;
 };

@@ -26,9 +26,6 @@ module.exports = (sequelize, DataTypes) => {
       underscored: true,
     }
   );
-  Classes.associate = function (models) {
-    Classes.belongsTo(models.course, { foreignKey: "course_id" });
-    Classes.hasMany(models.absen);
-  };
+
   return Classes;
 };

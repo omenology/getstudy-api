@@ -2,10 +2,10 @@ const route = require("express").Router({ mergeParams: true });
 const uuid_validator = require("uuid-validate");
 const sha256 = require("js-sha256");
 
-const { Sequelize, Op } = require("../../../../helpers/conection");
 const response = require("../../../../helpers/response");
 
-const classes = Sequelize.import("../../../data/models/classes.js");
+const { Sequelize, Op, models } = require("../../../data/models");
+const classes = models.classes;
 
 route.get("/", async (req, res) => {
   try {

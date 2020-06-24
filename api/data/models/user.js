@@ -29,8 +29,6 @@ module.exports = (sequelize, DataTypes) => {
       underscored: true,
     }
   );
-  User.associate = function (models) {
-    User.belongsTo(models.role, { foreignKey: "role_id" });
-  };
+
   return User;
 };
