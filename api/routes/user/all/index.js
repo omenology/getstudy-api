@@ -1,9 +1,10 @@
 const route = require("express").Router({ mergeParams: true });
 const uuid_validator = require("uuid-validate");
 
+const { sequelize, Op } = require("../../../../helpers/conection");
 const response = require("../../../../helpers/response");
 
-const { Sequelize, Op, models } = require("../../../data/models");
+const models = require("../../../data/models");
 const role = models.role;
 const user = models.user;
 const logActivity = models.logActivities;
@@ -32,7 +33,7 @@ route.post("/add", async (req, res) => {
     filename: "photprofildong",
   };
 
-  const transaction = await Sequelize.transaction();
+  const transaction = await sequelize.transaction();
 
   try {
     // validation data
@@ -99,8 +100,8 @@ route.get("/tes", async (req, res) => {
   console.log("lalal");
   try {
     let data = await user.findAll({
-      attributes: [[Sequelize.json("profile.name.first_name"), "value"]],
-      where: Sequelize.json("profile.name.first_name", "Guru"),
+      attributes: [[sequelize.json("profile.name.first_name"), "value"]],
+      where: sequelize.json("profile.name.first_name", "Guru"),
     });
 
     // data = data.map((element) => {

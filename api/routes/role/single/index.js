@@ -1,9 +1,10 @@
 const route = require("express").Router({ mergeParams: true });
 const uuid_validator = require("uuid-validate");
 
+const { sequelize, Op } = require("../../../../helpers/conection");
 const response = require("../../../../helpers/response");
 
-const { Sequelize, Op, models } = require("../../../data/models");
+const models = require("../../../data/models");
 const role = models.role;
 
 route.get("/", async (req, res) => {

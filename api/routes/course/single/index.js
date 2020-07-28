@@ -2,9 +2,10 @@ const route = require("express").Router({ mergeParams: true });
 const uuid_validator = require("uuid-validate");
 const sha256 = require("js-sha256");
 
+const { sequelize, Op } = require("../../../../helpers/conection");
 const response = require("../../../../helpers/response");
 
-const { Sequelize, Op, models } = require("../../../data/models");
+const models = require("../../../data/models");
 const course = models.course;
 const absen = models.absen;
 const classes = models.classes;

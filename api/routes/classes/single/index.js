@@ -1,9 +1,10 @@
 const route = require("express").Router({ mergeParams: true });
 const uuid_validator = require("uuid-validate");
 
+const { sequelize, Op } = require("../../../../helpers/conection");
 const response = require("../../../../helpers/response");
 
-const { Sequelize, Op, models } = require("../../../data/models");
+const models = require("../../../data/models");
 const classes = models.classes;
 const logActivities = models.logActivities;
 const absen = models.absen;
@@ -76,7 +77,7 @@ route.post("/users/add", async (req, res) => {
   const id = req.params.id;
   const users = req.body.users;
 
-  const transaction = await Sequelize.transaction();
+  const transaction = await sequelize.transaction();
   try {
     if (!uuid_validator(id)) return response.badrequest(res, "id classes must be uuid format");
     if (!Array.isArray(users)) return response.badrequest(res, "user id colections must be array format");
@@ -136,7 +137,7 @@ route.delete("/users/delete", async (req, res) => {
   const id = req.params.id;
   const users = req.body.users;
 
-  const transaction = await Sequelize.transaction();
+  const transaction = await sequelize.transaction();
   try {
     if (!uuid_validator(id)) return response.badrequest(res, "id classes must be uuid format");
     if (!Array.isArray(users)) return response.badrequest(res, "user id colections must be array format");
@@ -219,7 +220,7 @@ route.post("/absen/add", async (req, res) => {
   const id = req.params.id;
   const users = req.body.users;
 
-  const transaction = await Sequelize.transaction();
+  const transaction = await sequelize.transaction();
   try {
     if (!uuid_validator(id)) return response.badrequest(res, "id classes must be uuid format");
     if (!Array.isArray(users)) return response.badrequest(res, "user id colections must be array format");

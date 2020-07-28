@@ -2,9 +2,10 @@ const route = require("express").Router({ mergeParams: true });
 const email_validator = require("email-validator");
 const sha256 = require("js-sha256");
 
+const { sequelize, Op } = require("../../../helpers/conection");
 const response = require("../../../helpers/response");
 
-const { Sequelize, Op, models } = require("../../data/models");
+const models = require("../../data/models");
 const user = models.user;
 const role = models.role;
 const logActivity = models.logActivities;
@@ -13,7 +14,7 @@ route.post("/login", async (req, res) => {
   const email = req.body.email || null;
   const password = sha256(req.body.password) || null;
 
-  const transaction = await Sequelize.transaction();
+  const transaction = await sequelize.transaction();
   try {
     if (!(email || password)) return response.badrequest(res, "email or password must not be empty");
     if (!email_validator.validate(email)) return response.badrequest(res, "Email not Valid");

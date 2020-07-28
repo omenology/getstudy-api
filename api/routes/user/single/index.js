@@ -1,9 +1,10 @@
 const route = require("express").Router({ mergeParams: true });
 const uuid_validator = require("uuid-validate");
 
+const { sequelize, Op } = require("../../../../helpers/conection");
 const response = require("../../../../helpers/response");
 
-const { Sequelize, Op, models } = require("../../../data/models");
+const models = require("../../../data/models");
 const role = models.role;
 const user = models.user;
 const logActivity = models.logActivities;
@@ -12,11 +13,7 @@ route.get("/", async (req, res) => {
   const id = req.params.id;
   try {
     if (!uuid_validator(id)) return response.badrequest(res, "id user must be uuid format");
-    const data = await user.findOne({
-      where: {
-        id,
-      },
-    });
+    const data = await user.findByPk(id);
 
     response.ok(res, data, "fetch data users", true, null, null, null);
   } catch (error) {
@@ -32,7 +29,7 @@ route.get("/classes", async (req, res) => {
     const data = await classes.findAll({
       attributes: { exclude: ["created_at", "created_by", "updated_at", "updated_by", "deleted_at", "deleted_by"] },
       where: {
-        [Op.and]: [{ active: true }, Sequelize.literal(`JSON_CONTAINS(users, '["${id}"]') `)],
+        [Op.and]: [{ active: true }, sequelize.literal(`JSON_CONTAINS(users, '["${id}"]') `)],
       },
       limit: 10,
     });

@@ -4,6 +4,7 @@ require("dotenv/config");
 const express = require("express");
 const helmet = require("helmet");
 
+const { sequelize } = require("./helpers/conection");
 const response = require("./helpers/response");
 
 const api = require("./api/routes");
@@ -27,6 +28,8 @@ app.use("*", (req, res) => {
 /* Server initialization */
 const host = process.env.HOST || "localhost"; // hostname
 const port = process.env.PORT || 4000; // used port
+
+sequelize.sync();
 
 app.listen(port, host, () => {
   console.log(`Service start on host : ${host} and port : ${port}`);
