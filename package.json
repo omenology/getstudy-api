@@ -5,10 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "npm run db-create && npm run db-migrate && npm run db-seed",
     "db-create": "node helpers/createDB.js",
-    "db-migrate": "npx sequelize-cli db:migrate",
-    "db-unmigrate": "npx sequelize-cli db:migrate:undo:all",
     "db-seed": "npx sequelize-cli db:seed:all",
     "db-unseed": "npx sequelize-cli db:seed:undo:all"
   },
@@ -20,6 +17,7 @@
   "author": "getIdea",
   "license": "ISC",
   "dependencies": {
+    "@hapi/joi": "^17.1.1",
     "dotenv": "^8.2.0",
     "email-validator": "^2.0.4",
     "express": "^4.17.1",

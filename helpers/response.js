@@ -1,8 +1,8 @@
 module.exports = {
-  datatable: async (res, data, message, success, draw, recordsTotal, recordsFiltered) => {
+  datatable: async (res, data, message, draw, recordsTotal, recordsFiltered) => {
     res.status(200).send({
       meta: {
-        success: success,
+        success: true,
         message: message,
         info: {
           draw: draw,
@@ -13,10 +13,10 @@ module.exports = {
       data: data,
     });
   },
-  ok: async (res, data, message, success, page, limit, total) => {
+  ok: async (res, data, message, page, limit, total) => {
     res.status(200).send({
       meta: {
-        success: success,
+        success: true,
         message: message,
         info: {
           page: page,
